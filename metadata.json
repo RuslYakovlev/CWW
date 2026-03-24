@@ -1,0 +1,7 @@
+{
+  "name": "Church Without Walls Chișinău",
+  "description": "Ultra-modern bilingual website for the Church Without Walls community in Chișinău, featuring service info, vision, and an AI-powered spiritual assistant.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

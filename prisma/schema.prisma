@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id       String @id @default(uuid())
+  username String @unique
+  password String
+}
+
+model Sermon {
+  id         String   @id @default(uuid())
+  title      String
+  speaker    String
+  imageUrl   String
+  youtubeUrl String?
+  date       DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  title       String
+  subtitle    String
+  dateLabel   String
+  timeLabel   String
+  formatLabel String
+  imageUrl    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Settings {
+  id                String   @id @default("global")
+  youtubeChannelUrl String?
+  updatedAt         DateTime @updatedAt
+}
