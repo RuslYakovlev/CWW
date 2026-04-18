@@ -141,5 +141,75 @@ export const translations: Record<Language, Translation> = {
     assistantGreeting: "Salut! Sunt asistentul tău. Cum te pot ajuta?",
     assistantTitle: "Asistent",
     assistantPlaceholder: "Întreabă ceva..."
+  },
+  en: {
+    // Header
+    navAbout: "About Us",
+    navSermons: "Sermons",
+    navEvents: "Events",
+    navGroups: "Groups",
+    navGive: "Give",
+    ctaHeader: "I'm New",
+    // Hero
+    heroTitle: "The church is not walls. It's people.",
+    heroSubtitle: "We are a community of faith, hope, and love in the heart of Chișinău, open to everyone.",
+    ctaJoin: "Join Us",
+    ctaWatchOnline: "Watch Online",
+    // About Brief
+    aboutBriefTitle: "Life in Motion",
+    whoWeAre: "Who We Are",
+    whoWeAreText: "A family where everyone matters. We believe in authentic relationships and support.",
+    whatWeBelieve: "What We Believe",
+    whatWeBelieveText: "In the simple Gospel of Jesus, which changes lives and gives hope.",
+    ourMission: "Our Mission",
+    ourMissionText: "To love God, love people, and serve our city just as Jesus would.",
+    // Upcoming Event
+    upcomingEventTitle: "Upcoming Event",
+    addToCalendar: "Add to Calendar",
+    // Latest Sermons
+    latestSermonsTitle: "Latest Sermons",
+    allSermons: "All Sermons",
+    sermon1Title: "Life by the Spirit",
+    sermon1Speaker: "Pastor Evghenii Advahov",
+    sermon2Title: "Where is your faith? or What God do you believe in?",
+    sermon2Speaker: "Pastor Alexandr Belev",
+    sermon3Title: "Beyond the Patterns",
+    sermon3Speaker: "Radion Velcev",
+    // Church Life
+    churchLifeTitle: "Church Life",
+    churchLifeSubtitle: "Photos, small groups, social projects — stories we write together.",
+    // Groups
+    groupsTitle: "Small Groups",
+    groupsSubtitle: "Our church has small groups that meet on Wednesdays at 19:00. It's a place to connect, share, and find support.",
+    groupsTime: "Wednesday, 19:00",
+    groupsLocation: "Offline and Online",
+    // Become Family
+    becomeFamilyTitle: "Become Part of the Family",
+    becomeFamilyText: "Leave your contacts, and we will reach out to tell you more about the church and small groups.",
+    yourName: "Your Name",
+    yourPhone: "Your Phone",
+    send: "Send",
+    // Footer
+    footerRights: "All rights reserved.",
+    footerNavigation: "Navigation",
+    footerContacts: "Contacts",
+    footerSocial: "Social Media",
+    footerTagline: "A community of faith, hope, and love.",
+    // Contact Info
+    address: "Strada Carierei, MD-2024, Chișinău, Moldova",
+    phone: "+94 76 372 5520",
+    email: "office@cww.md",
+    // Event Details
+    sundayService: "Sunday Service",
+    serviceTimes: "10:00 and 12:00",
+    dateLabel: "Date",
+    timeLabel: "Time",
+    formatLabel: "Format",
+    everySunday: "Every Sunday",
+    offlineOnline: "Offline and Online",
+    // Chat Assistant
+    assistantGreeting: "Hello! I am your assistant. How can I help you?",
+    assistantTitle: "Assistant",
+    assistantPlaceholder: "Ask something..."
   }
 };

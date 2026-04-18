@@ -1,5 +1,5 @@
 
-export type Language = 'ru' | 'ro';
+export type Language = 'ru' | 'ro' | 'en';
 
 // FIX: Add ChatMessage type used by the chat assistant feature.
 export interface ChatMessage {

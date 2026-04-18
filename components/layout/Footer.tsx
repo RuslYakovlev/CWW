@@ -28,7 +28,7 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
             <ul className="space-y-4">
               <li><a href="#about" className="text-white/80 hover:text-accent transition-colors text-sm">{t.navAbout}</a></li>
               <li><a href="#sermons" className="text-white/80 hover:text-accent transition-colors text-sm">{t.navSermons}</a></li>
-              <li><a href="#events" className="text-white/80 hover:text-accent transition-colors text-sm">{t.navEvents}</a></li>
+              <li><a href="#groups" className="text-white/80 hover:text-accent transition-colors text-sm">{t.navGroups}</a></li>
             </ul>
           </div>
 
@@ -44,9 +44,9 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
           <div>
             <h3 className="font-bold tracking-widest text-xs uppercase text-white/40 mb-6">{t.footerSocial}</h3>
             <div className="flex gap-6">
-              <a href="#" className="text-white/80 hover:text-accent transition-colors text-sm uppercase tracking-widest">FB</a>
-              <a href="#" className="text-white/80 hover:text-accent transition-colors text-sm uppercase tracking-widest">IG</a>
-              <a href="#" className="text-white/80 hover:text-accent transition-colors text-sm uppercase tracking-widest">YT</a>
+              <a href="https://www.facebook.com/bisericafaraziduri" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-accent transition-colors text-sm uppercase tracking-widest">FB</a>
+              <a href="https://www.instagram.com/church.without.walls/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-accent transition-colors text-sm uppercase tracking-widest">IG</a>
+              <a href="https://www.youtube.com/@Church_Without_Wallsm" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-accent transition-colors text-sm uppercase tracking-widest">YT</a>
             </div>
           </div>
         </div>

@@ -24,7 +24,6 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
   const navLinks = [
     { name: t.navAbout, href: '#about' },
     { name: t.navSermons, href: '#sermons' },
-    { name: t.navEvents, href: '#events' },
     { name: t.navGroups, href: '#groups' },
     { name: t.navGive, href: '#give' },
   ];
@@ -65,6 +64,8 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
               <button onClick={() => setLang('ru')} className={`transition-colors ${lang === 'ru' ? (isScrolled ? 'text-text' : 'text-white') : 'hover:text-accent'}`}>RU</button>
               <span>|</span>
               <button onClick={() => setLang('ro')} className={`transition-colors ${lang === 'ro' ? (isScrolled ? 'text-text' : 'text-white') : 'hover:text-accent'}`}>RO</button>
+              <span>|</span>
+              <button onClick={() => setLang('en')} className={`transition-colors ${lang === 'en' ? (isScrolled ? 'text-text' : 'text-white') : 'hover:text-accent'}`}>EN</button>
             </div>
           </div>
         </div>
