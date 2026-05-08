@@ -1,5 +1,5 @@
 {
-  "name": "church-without-walls-chișinău",
+  "name": "church-without-walls-chisinau",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,7 +8,9 @@
     "start": "node server.ts",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "sync:youtube": "tsx update-sermons.ts",
+    "seed": "tsx seed.ts"
   },
   "dependencies": {
     "@google/genai": "^1.41.0",
@@ -19,6 +21,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "fast-xml-parser": "^5.7.3",
     "framer-motion": "^11.11.11",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.6.0",
@@ -38,6 +41,7 @@
     "@types/react-dom": "^18.3.1",
     "@types/three": "^0.183.1",
     "@vitejs/plugin-react": "^5.0.0",
+    "pdf-to-img": "^6.0.0",
     "prisma": "^6.19.2",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",

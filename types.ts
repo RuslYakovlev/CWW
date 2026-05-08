@@ -1,10 +1,19 @@
 
 export type Language = 'ru' | 'ro' | 'en';
 
-// FIX: Add ChatMessage type used by the chat assistant feature.
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
+}
+
+export interface Sermon {
+  id: string;
+  title: string;
+  speaker: string;
+  imageUrl: string;
+  youtubeId?: string | null;
+  youtubeUrl?: string | null;
+  date: string;
 }
 
 export interface Translation {
@@ -88,4 +97,15 @@ export interface Translation {
   assistantGreeting: string;
   assistantTitle: string;
   assistantPlaceholder: string;
+
+  // Sermons catalog
+  sermonsPageTitle: string;
+  sermonsSearchPlaceholder: string;
+  sortNewest: string;
+  sortPopular: string;
+  sortOldest: string;
+  watchSermon: string;
+  closePlayer: string;
+  noSermonsFound: string;
+  loadingSermons: string;
 }

@@ -13,6 +13,7 @@ import LatestSermons from './components/sections/LatestSermons';
 import Groups from './components/sections/Groups';
 import ChurchLife from './components/sections/ChurchLife';
 import BecomeFamily from './components/sections/BecomeFamily';
+import SermonsPage from './components/pages/SermonsPage';
 
 import AdminLogin from './components/admin/AdminLogin';
 import AdminDashboard from './components/admin/AdminDashboard';
@@ -30,7 +31,7 @@ const PublicApp: React.FC<{ lang: Language, setLang: (l: Language) => void, t: a
       <ChurchLife t={t} />
       <BecomeFamily t={t} />
     </main>
-    <Footer t={t} />
+    <Footer t={t} lang={lang} />
   </div>
 );
 
@@ -46,6 +47,7 @@ const App: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<PublicApp lang={lang} setLang={setLang} t={t} />} />
+        <Route path="/sermons" element={<SermonsPage lang={lang} setLang={setLang} t={t} />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/sermons/:id" element={<SermonEditor />} />

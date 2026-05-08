@@ -8,6 +8,7 @@ export default function AdminDashboard() {
   const [settings, setSettings] = useState<any>({ youtubeChannelUrl: '' });
   const [loading, setLoading] = useState(true);
   const [savingSettings, setSavingSettings] = useState(false);
+  const [syncingYoutube, setSyncingYoutube] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -65,6 +66,30 @@ export default function AdminDashboard() {
       alert('Failed to save settings');
     }
     setSavingSettings(false);
+  };
+
+  const syncYoutube = async () => {
+    setSyncingYoutube(true);
+    const token = localStorage.getItem('adminToken');
+    try {
+      const response = await fetch('/api/youtube/sync', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Sync failed');
+
+      const [sermonsData, settingsData] = await Promise.all([
+        fetch('/api/sermons').then(res => res.json()),
+        fetch('/api/settings').then(res => res.json()),
+      ]);
+      setSermons(Array.isArray(sermonsData) ? sermonsData : []);
+      if (settingsData && !settingsData.error) setSettings(settingsData);
+      alert(`YouTube sync complete: ${result.created} new, ${result.updated} updated`);
+    } catch (error) {
+      alert(`YouTube sync failed: ${String(error)}`);
+    }
+    setSyncingYoutube(false);
   };
 
   if (loading) return <div className="p-10 text-center">Loading...</div>;
@@ -136,6 +161,20 @@ export default function AdminDashboard() {
                   />
                   <p className="text-xs text-text/50 mt-2">This link is used for the "All Sermons" button.</p>
                 </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-text/60 mb-2">YouTube Channel ID</label>
+                  <input
+                    type="text"
+                    value={settings.youtubeChannelId || ''}
+                    onChange={e => setSettings({ ...settings, youtubeChannelId: e.target.value })}
+                    className="w-full px-5 py-4 bg-secondary/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent"
+                    placeholder="UC..."
+                  />
+                  {settings.lastYoutubeSyncAt && (
+                    <p className="text-xs text-text/50 mt-2">Last sync: {new Date(settings.lastYoutubeSyncAt).toLocaleString()}</p>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-3">
                 <button 
                   onClick={saveSettings} 
                   disabled={savingSettings}
@@ -143,6 +182,14 @@ export default function AdminDashboard() {
                 >
                   {savingSettings ? 'Saving...' : 'Save Settings'}
                 </button>
+                <button
+                  onClick={syncYoutube}
+                  disabled={syncingYoutube}
+                  className="px-6 py-3 bg-text text-white rounded-full uppercase tracking-widest text-sm font-bold hover:bg-text/90 transition-colors disabled:opacity-50"
+                >
+                  {syncingYoutube ? 'Syncing...' : 'Sync YouTube Now'}
+                </button>
+                </div>
               </div>
             </div>
           </div>

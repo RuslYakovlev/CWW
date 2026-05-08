@@ -18,6 +18,7 @@ model Sermon {
   title      String
   speaker    String
   imageUrl   String
+  youtubeId  String?  @unique
   youtubeUrl String?
   date       DateTime @default(now())
   createdAt  DateTime @default(now())
@@ -37,7 +38,9 @@ model Event {
 }
 
 model Settings {
-  id                String   @id @default("global")
+  id                String    @id @default("global")
   youtubeChannelUrl String?
-  updatedAt         DateTime @updatedAt
+  youtubeChannelId  String?
+  lastYoutubeSyncAt DateTime?
+  updatedAt         DateTime  @updatedAt
 }

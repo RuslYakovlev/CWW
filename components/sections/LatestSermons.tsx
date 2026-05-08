@@ -1,42 +1,29 @@
-
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import Container from '../layout/Container';
 import Card from '../ui/Card';
-import Button from '../ui/Button';
-import { Translation } from '../../types';
+import { Sermon, Translation } from '../../types';
+import VideoPlayerModal from '../sermons/VideoPlayerModal';
+import { isPublicSermon } from '../../utils/sermons';
 
 interface LatestSermonsProps {
   t: Translation;
 }
 
 const LatestSermons: React.FC<LatestSermonsProps> = ({ t }) => {
-  const [sermons, setSermons] = useState<any[]>([]);
-  const [settings, setSettings] = useState<any>({});
+  const [sermons, setSermons] = useState<Sermon[]>([]);
+  const [activeSermon, setActiveSermon] = useState<Sermon | null>(null);
 
   useEffect(() => {
     fetch('/api/sermons')
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data)) {
-          // Only take the first 3 sermons for the homepage
-          setSermons(data.slice(0, 3));
-        } else {
-          console.error('Expected array of sermons, got:', data);
-        }
+        if (Array.isArray(data)) setSermons(data.filter(isPublicSermon).slice(0, 3));
       })
       .catch(err => console.error('Failed to fetch sermons', err));
-
-    fetch('/api/settings')
-      .then(res => res.json())
-      .then(data => {
-        if (data && !data.error) {
-          setSettings(data);
-        }
-      })
-      .catch(err => console.error('Failed to fetch settings', err));
   }, []);
-  
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
@@ -64,10 +51,16 @@ const LatestSermons: React.FC<LatestSermonsProps> = ({ t }) => {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
         >
-          {sermons.map((sermon, index) => {
-            const cardContent = (
-              <Card key={sermon.id || index} className="p-0 overflow-hidden rounded-[2rem] border-none shadow-sm hover:shadow-xl transition-all duration-500 group bg-white h-full">
-                <div className="aspect-[4/3] overflow-hidden relative">
+          {sermons.map((sermon, index) => (
+            <button
+              key={sermon.id || index}
+              type="button"
+              onClick={() => sermon.youtubeId ? setActiveSermon(sermon) : sermon.youtubeUrl && window.open(sermon.youtubeUrl, '_blank', 'noopener,noreferrer')}
+              className="text-left"
+              aria-label={`${t.watchSermon}: ${sermon.title}`}
+            >
+              <Card className="p-0 overflow-hidden rounded-[2rem] border-none shadow-sm hover:shadow-xl transition-all duration-500 group bg-white h-full">
+                <div className="aspect-video overflow-hidden relative bg-black">
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10" />
                   <img src={sermon.imageUrl} alt={sermon.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
                 </div>
@@ -76,30 +69,20 @@ const LatestSermons: React.FC<LatestSermonsProps> = ({ t }) => {
                   <h3 className="font-serif text-2xl font-semibold text-text">{sermon.title}</h3>
                 </div>
               </Card>
-            );
-
-            return sermon.youtubeUrl ? (
-              <a key={sermon.id || index} href={sermon.youtubeUrl} target="_blank" rel="noopener noreferrer" className="block">
-                {cardContent}
-              </a>
-            ) : (
-              <div key={sermon.id || index}>
-                {cardContent}
-              </div>
-            );
-          })}
+            </button>
+          ))}
         </motion.div>
-        
+
         <div className="text-center mt-16">
-          {settings.youtubeChannelUrl ? (
-            <a href={settings.youtubeChannelUrl} target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" className="px-10 py-4 text-sm uppercase tracking-widest">{t.allSermons}</Button>
-            </a>
-          ) : (
-            <Button variant="outline" className="px-10 py-4 text-sm uppercase tracking-widest">{t.allSermons}</Button>
-          )}
+          <Link
+            to="/sermons"
+            className="inline-flex px-10 py-4 rounded-full font-semibold text-sm uppercase tracking-widest transition-all duration-300 border border-text/20 text-text hover:bg-text hover:text-white focus:outline-none focus:ring-4 focus:ring-text/20"
+          >
+            {t.allSermons}
+          </Link>
         </div>
       </Container>
+      <VideoPlayerModal sermon={activeSermon} t={t} onClose={() => setActiveSermon(null)} />
     </section>
   );
 };

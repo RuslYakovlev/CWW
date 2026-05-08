@@ -6,20 +6,21 @@ import bcrypt from 'bcrypt';
 import { z } from 'zod';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
+import { DEFAULT_YOUTUBE_CHANNEL_ID, DEFAULT_YOUTUBE_CHANNEL_URL, syncYoutubeSermons } from './services/youtubeSync';
 
 dotenv.config();
 
 const app = express();
 const prisma = new PrismaClient();
-const PORT = 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
+const PORT = Number(process.env.PORT || 3000);
+const JWT_SECRET = process.env.JWT_SECRET || 'change-this-secret-in-production';
+const YOUTUBE_SYNC_INTERVAL_MS = 30 * 60 * 1000;
 
 app.use(cors());
 app.use(express.json());
 
-// --- Auth Middleware ---
 const authenticateToken = (req: any, res: any, next: any) => {
-  const authHeader = req.headers['authorization'];
+  const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
@@ -31,81 +32,121 @@ const authenticateToken = (req: any, res: any, next: any) => {
   });
 };
 
-// --- API Routes ---
+const sermonSchema = z.object({
+  title: z.string().min(1),
+  speaker: z.string().min(1),
+  imageUrl: z.string().min(1),
+  youtubeUrl: z.string().optional().nullable(),
+  youtubeId: z.string().optional().nullable(),
+  date: z.string().datetime().optional(),
+});
 
-// Setup initial admin user if none exists
+const eventSchema = z.object({
+  title: z.string().min(1),
+  subtitle: z.string().min(1),
+  dateLabel: z.string().min(1),
+  timeLabel: z.string().min(1),
+  formatLabel: z.string().min(1),
+  imageUrl: z.string().min(1),
+});
+
+async function ensureInitialData() {
+  const adminExists = await prisma.user.findFirst();
+  if (!adminExists) {
+    const hashedPassword = await bcrypt.hash('admin123', 10);
+    await prisma.user.create({ data: { username: 'admin', password: hashedPassword } });
+    console.log('Auto-setup: admin user created (admin / admin123)');
+  }
+
+  await prisma.settings.upsert({
+    where: { id: 'global' },
+    update: {
+      youtubeChannelUrl: DEFAULT_YOUTUBE_CHANNEL_URL,
+      youtubeChannelId: DEFAULT_YOUTUBE_CHANNEL_ID,
+    },
+    create: {
+      id: 'global',
+      youtubeChannelUrl: DEFAULT_YOUTUBE_CHANNEL_URL,
+      youtubeChannelId: DEFAULT_YOUTUBE_CHANNEL_ID,
+    },
+  });
+
+  const eventCount = await prisma.event.count();
+  if (eventCount === 0) {
+    await prisma.event.create({
+      data: {
+        title: 'Ближайшее событие',
+        subtitle: 'Воскресное богослужение',
+        dateLabel: 'Каждое воскресенье',
+        timeLabel: '10:00 и 12:00',
+        formatLabel: 'Офлайн и онлайн',
+        imageUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1200',
+      },
+    });
+    console.log('Auto-setup: events seeded');
+  }
+}
+
 app.post('/api/setup', async (req, res) => {
   try {
     const adminExists = await prisma.user.findFirst();
-    if (adminExists) {
-      return res.status(400).json({ error: 'Admin already exists' });
-    }
+    if (adminExists) return res.status(400).json({ error: 'Admin already exists' });
+
     const hashedPassword = await bcrypt.hash('admin123', 10);
-    const user = await prisma.user.create({
-      data: { username: 'admin', password: hashedPassword },
-    });
+    const user = await prisma.user.create({ data: { username: 'admin', password: hashedPassword } });
     res.json({ message: 'Admin created', username: user.username });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// Login
-app.post('/api/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    console.log(`Login attempt for username: ${username}`);
-    const user = await prisma.user.findUnique({ where: { username } });
-    
-    if (!user) {
-      console.log(`User ${username} not found`);
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-    
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      console.log(`Password mismatch for user ${username}`);
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '24h' });
-    console.log(`Login successful for user ${username}`);
-    res.json({ token });
-  } catch (error) {
-    console.error('Login error:', error);
     res.status(500).json({ error: 'Server error', details: String(error) });
   }
 });
 
-// Sermons
+app.post('/api/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '24h' });
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error', details: String(error) });
+  }
+});
+
 app.get('/api/sermons', async (req, res) => {
   try {
-    const sermons = await prisma.sermon.findMany({ orderBy: { createdAt: 'desc' } });
+    const sermons = await prisma.sermon.findMany({ orderBy: { date: 'desc' } });
     res.json(sermons);
   } catch (error) {
-    console.error('Error fetching sermons:', error);
     res.status(500).json({ error: 'Server error', details: String(error) });
   }
 });
 
 app.post('/api/sermons', authenticateToken, async (req, res) => {
   try {
-    const sermon = await prisma.sermon.create({ data: req.body });
+    const parsed = sermonSchema.parse(req.body);
+    const sermon = await prisma.sermon.create({
+      data: { ...parsed, date: parsed.date ? new Date(parsed.date) : undefined },
+    });
     res.json(sermon);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(400).json({ error: 'Could not create sermon', details: String(error) });
   }
 });
 
 app.put('/api/sermons/:id', authenticateToken, async (req, res) => {
   try {
+    const parsed = sermonSchema.parse(req.body);
     const sermon = await prisma.sermon.update({
       where: { id: req.params.id },
-      data: req.body,
+      data: { ...parsed, date: parsed.date ? new Date(parsed.date) : undefined },
     });
     res.json(sermon);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(400).json({ error: 'Could not update sermon', details: String(error) });
   }
 });
 
@@ -114,26 +155,25 @@ app.delete('/api/sermons/:id', authenticateToken, async (req, res) => {
     await prisma.sermon.delete({ where: { id: req.params.id } });
     res.json({ success: true });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: String(error) });
   }
 });
 
-// Events
 app.get('/api/events', async (req, res) => {
   try {
     const events = await prisma.event.findMany({ orderBy: { createdAt: 'desc' } });
     res.json(events);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: String(error) });
   }
 });
 
 app.post('/api/events', authenticateToken, async (req, res) => {
   try {
-    const event = await prisma.event.create({ data: req.body });
+    const event = await prisma.event.create({ data: eventSchema.parse(req.body) });
     res.json(event);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(400).json({ error: 'Could not create event', details: String(error) });
   }
 });
 
@@ -141,11 +181,11 @@ app.put('/api/events/:id', authenticateToken, async (req, res) => {
   try {
     const event = await prisma.event.update({
       where: { id: req.params.id },
-      data: req.body,
+      data: eventSchema.parse(req.body),
     });
     res.json(event);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(400).json({ error: 'Could not update event', details: String(error) });
   }
 });
 
@@ -154,20 +194,24 @@ app.delete('/api/events/:id', authenticateToken, async (req, res) => {
     await prisma.event.delete({ where: { id: req.params.id } });
     res.json({ success: true });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: String(error) });
   }
 });
 
-// Settings
 app.get('/api/settings', async (req, res) => {
   try {
-    let settings = await prisma.settings.findUnique({ where: { id: 'global' } });
-    if (!settings) {
-      settings = await prisma.settings.create({ data: { id: 'global', youtubeChannelUrl: '' } });
-    }
+    const settings = await prisma.settings.upsert({
+      where: { id: 'global' },
+      update: {},
+      create: {
+        id: 'global',
+        youtubeChannelUrl: DEFAULT_YOUTUBE_CHANNEL_URL,
+        youtubeChannelId: DEFAULT_YOUTUBE_CHANNEL_ID,
+      },
+    });
     res.json(settings);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: String(error) });
   }
 });
 
@@ -180,82 +224,35 @@ app.put('/api/settings', authenticateToken, async (req, res) => {
     });
     res.json(settings);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: String(error) });
   }
 });
 
-// Seed Initial Data
+app.post('/api/youtube/sync', authenticateToken, async (req, res) => {
+  try {
+    const result = await syncYoutubeSermons(prisma);
+    res.json(result);
+  } catch (error) {
+    console.error('YouTube sync failed:', error);
+    res.status(500).json({ error: 'YouTube sync failed', details: String(error) });
+  }
+});
+
 app.post('/api/seed', async (req, res) => {
   try {
-    const sermonCount = await prisma.sermon.count();
-    if (sermonCount === 0) {
-      await prisma.sermon.createMany({
-        data: [
-          { title: "Жизнь по духу", speaker: "Пастор Евгений Адвахов", imageUrl: "https://placehold.co/800x600/FF5722/FFFFFF?text=ЖИЗНЬ+ПО+ДУХУ%0AПАСТОР+ЕВГЕНИЙ+АДВАХОВ" },
-          { title: "Где вера ваша? или В какого Бога ты веришь?", speaker: "Пастор Александр Белев", imageUrl: "https://placehold.co/800x600/FF9800/FFFFFF?text=ГДЕ+ВЕРА+ВАША?%0AПастор+Александр+Белев" },
-          { title: "За пределами шаблонов", speaker: "Радион Вельчев", imageUrl: "https://placehold.co/800x600/E0E0E0/000000?text=ЗА+ПРЕДЕЛАМИ+ШАБЛОНОВ%0AРАДИОН+ВЕЛЬЧЕВ" },
-        ]
-      });
-    }
-    
-    const eventCount = await prisma.event.count();
-    if (eventCount === 0) {
-      await prisma.event.create({
-        data: {
-          title: "Ближайшее событие",
-          subtitle: "Воскресное Богослужение",
-          dateLabel: "Каждое воскресенье",
-          timeLabel: "10:00 и 12:00",
-          formatLabel: "Офлайн и Онлайн",
-          imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1200"
-        }
-      });
-    }
-    res.json({ message: 'Seeded successfully' });
+    await ensureInitialData();
+    const result = await syncYoutubeSermons(prisma);
+    res.json({ message: 'Seeded successfully', youtube: result });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: String(error) });
   }
 });
 
-// --- Vite Integration ---
 async function startServer() {
-  // Auto-setup admin and seed data on startup
   try {
-    const adminExists = await prisma.user.findFirst();
-    if (!adminExists) {
-      const hashedPassword = await bcrypt.hash('admin123', 10);
-      await prisma.user.create({
-        data: { username: 'admin', password: hashedPassword },
-      });
-      console.log('Auto-setup: Admin user created');
-    }
-
-    const sermonCount = await prisma.sermon.count();
-    if (sermonCount === 0) {
-      await prisma.sermon.createMany({
-        data: [
-          { title: "Жизнь по духу", speaker: "Пастор Евгений Адвахов", imageUrl: "https://placehold.co/800x600/FF5722/FFFFFF?text=ЖИЗНЬ+ПО+ДУХУ%0AПАСТОР+ЕВГЕНИЙ+АДВАХОВ" },
-          { title: "Где вера ваша? или В какого Бога ты веришь?", speaker: "Пастор Александр Белев", imageUrl: "https://placehold.co/800x600/FF9800/FFFFFF?text=ГДЕ+ВЕРА+ВАША?%0AПастор+Александр+Белев" },
-          { title: "За пределами шаблонов", speaker: "Радион Вельчев", imageUrl: "https://placehold.co/800x600/E0E0E0/000000?text=ЗА+ПРЕДЕЛАМИ+ШАБЛОНОВ%0AРАДИОН+ВЕЛЬЧЕВ" },
-        ]
-      });
-      console.log('Auto-setup: Sermons seeded');
-    }
-    
-    const eventCount = await prisma.event.count();
-    if (eventCount === 0) {
-      await prisma.event.create({
-        data: {
-          title: "Ближайшее событие",
-          subtitle: "Воскресное Богослужение",
-          dateLabel: "Каждое воскресенье",
-          timeLabel: "10:00 и 12:00",
-          formatLabel: "Офлайн и Онлайн",
-          imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1200"
-        }
-      });
-      console.log('Auto-setup: Events seeded');
-    }
+    await ensureInitialData();
+    const result = await syncYoutubeSermons(prisma);
+    console.log(`YouTube sync: ${result.created} created, ${result.updated} updated`);
   } catch (error) {
     console.error('Auto-setup failed:', error);
   }
@@ -273,6 +270,15 @@ async function startServer() {
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
+
+  setInterval(async () => {
+    try {
+      const result = await syncYoutubeSermons(prisma);
+      console.log(`YouTube sync: ${result.created} created, ${result.updated} updated`);
+    } catch (error) {
+      console.error('Scheduled YouTube sync failed:', error);
+    }
+  }, YOUTUBE_SYNC_INTERVAL_MS);
 }
 
 startServer();

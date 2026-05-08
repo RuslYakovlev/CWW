@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Translation } from '../../types';
 import Button from '../ui/Button';
 import Container from '../layout/Container';
@@ -22,12 +21,7 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
       <div className="absolute inset-0 bg-black/50 z-0" />
 
       <Container className="relative z-10 flex flex-col items-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-4xl"
-        >
+        <div className="max-w-4xl">
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-white leading-[1.1] tracking-tight">
             {t.heroTitle}
           </h1>
@@ -42,7 +36,7 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
               {t.ctaWatchOnline}
             </Button>
           </div>
-        </motion.div>
+        </div>
       </Container>
     </section>
   );
