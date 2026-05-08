@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import { z } from 'zod';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
+import path from 'path';
 import { DEFAULT_YOUTUBE_CHANNEL_ID, DEFAULT_YOUTUBE_CHANNEL_URL, syncYoutubeSermons } from './services/youtubeSync';
 
 dotenv.config();
@@ -265,6 +266,9 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     app.use(express.static('dist'));
+    app.get(/^(?!\/api).*/, (req, res) => {
+      res.sendFile(path.resolve('dist/index.html'));
+    });
   }
 
   app.listen(PORT, '0.0.0.0', () => {
