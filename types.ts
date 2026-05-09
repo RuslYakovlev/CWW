@@ -22,6 +22,7 @@ export interface Translation {
   navSermons: string;
   navEvents: string;
   navGroups: string;
+  navContact: string;
   navGive: string;
   ctaHeader: string;
 
@@ -86,6 +87,14 @@ export interface Translation {
   phone: string;
   email: string;
   directionsLabel: string;
+
+  // Contact page
+  contactPageTitle: string;
+  contactPageSubtitle: string;
+  contactVisitTitle: string;
+  contactServiceTitle: string;
+  contactMapTitle: string;
+  contactOpenInMaps: string;
 
   // Event Details
   sundayService: string;

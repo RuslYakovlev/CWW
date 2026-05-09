@@ -147,6 +147,30 @@ const Seo: FC<SeoProps> = ({ lang }) => {
         openingHours: ['Su 10:00-13:30'],
         sameAs: socialLinks,
       });
+    } else if (seo.canonicalPath === '/contact') {
+      setJsonLd('church-jsonld', {
+        '@context': 'https://schema.org',
+        '@type': 'ContactPage',
+        name: seo.title,
+        description: seo.description,
+        url: canonicalUrl,
+        mainEntity: {
+          '@type': ['Organization', 'Church'],
+          name: 'Church Without Walls',
+          url: SITE_URL,
+          telephone: '+37376372552',
+          email: 'office@cww.md',
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: 'Strada Carierei',
+            postalCode: 'MD-2024',
+            addressLocality: 'Chisinau',
+            addressCountry: 'MD',
+          },
+          openingHours: ['Su 10:00-13:30'],
+          sameAs: socialLinks,
+        },
+      });
     } else {
       setJsonLd('church-jsonld', {
         '@context': 'https://schema.org',

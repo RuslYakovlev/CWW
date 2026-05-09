@@ -23,6 +23,7 @@ npm run sync:youtube
 - Added hreflang links for English, Russian and Romanian variants.
 - Added Schema.org JSON-LD for `Organization` + `Church` on the homepage.
 - Added `CollectionPage` and `VideoObject` structured data for the sermons catalog.
+- Added a public contact page with address, phone, email, service schedule, embedded map and GPS directions.
 - Added a local SEO content block on the homepage for Chisinau and Moldova.
 - Updated the homepage H1 per language:
   - EN: `Christian Church in Chisinau, Moldova`
@@ -52,6 +53,7 @@ npm run sync:youtube
 - `components/layout/Header.tsx`
 - `components/layout/Footer.tsx`
 - `components/pages/SermonsPage.tsx`
+- `components/pages/ContactPage.tsx`
 - `components/sermons/SermonCard.tsx`
 - `utils/seo.ts`
 - `utils/analytics.ts`
@@ -66,9 +68,7 @@ npm run sync:youtube
 - `https://cww.md/?lang=ru`
 - `https://cww.md/?lang=ro`
 - `https://cww.md/sermons`
-- `https://cww.md/sermons?lang=en`
-- `https://cww.md/sermons?lang=ru`
-- `https://cww.md/sermons?lang=ro`
+- `https://cww.md/contact`
 
 ### Metadata
 
@@ -92,6 +92,12 @@ Sermons page:
 - EN: `Church Without Walls Messages | Sermons in Chisinau, Moldova`
 - RU: `Проповеди Church Without Walls | Христианские проповеди Кишинёв`
 - RO: `Predici Church Without Walls | Mesaje creștine Chișinău`
+
+Contact page:
+
+- EN: `Contact Church Without Walls | Christian Church in Chisinau`
+- RU: `Контакты Church Without Walls | Христианская церковь в Кишинёве`
+- RO: `Contact Church Without Walls | Biserică creștină în Chișinău`
 
 ### Languages And Hreflang
 

@@ -29,6 +29,7 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
     { name: t.navAbout, href: isHome ? '#about' : '/#about' },
     { name: t.navSermons, href: '/sermons' },
     { name: t.navGroups, href: isHome ? '#groups' : '/#groups' },
+    { name: t.navContact, href: '/contact' },
     { name: t.navGive, href: isHome ? '#give' : '/#give' },
   ];
 

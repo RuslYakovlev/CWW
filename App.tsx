@@ -16,6 +16,7 @@ import BecomeFamily from './components/sections/BecomeFamily';
 import SermonsPage from './components/pages/SermonsPage';
 import LocalSeo from './components/sections/LocalSeo';
 import Seo from './components/seo/Seo';
+import ContactPage from './components/pages/ContactPage';
 
 import AdminLogin from './components/admin/AdminLogin';
 import AdminDashboard from './components/admin/AdminDashboard';
@@ -65,6 +66,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<PublicApp lang={lang} setLang={setLang} t={t} />} />
         <Route path="/sermons" element={<SermonsPage lang={lang} setLang={setLang} t={t} />} />
+        <Route path="/contact" element={<ContactPage lang={lang} setLang={setLang} t={t} />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/sermons/:id" element={<SermonEditor />} />

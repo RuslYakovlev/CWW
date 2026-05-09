@@ -34,6 +34,7 @@ const Footer: React.FC<FooterProps> = ({ t, lang = 'ru' }) => {
               <li><a href="/#about" className="text-white/80 hover:text-accent transition-colors text-sm">{t.navAbout}</a></li>
               <li><Link to="/sermons" className="text-white/80 hover:text-accent transition-colors text-sm">{t.navSermons}</Link></li>
               <li><a href="/#groups" className="text-white/80 hover:text-accent transition-colors text-sm">{t.navGroups}</a></li>
+              <li><Link to="/contact" className="text-white/80 hover:text-accent transition-colors text-sm">{t.navContact}</Link></li>
             </ul>
           </div>
 

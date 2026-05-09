@@ -11,33 +11,6 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://cww.md/?lang=en</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://cww.md/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://cww.md/?lang=ru"/>
-    <xhtml:link rel="alternate" hreflang="ro" href="https://cww.md/?lang=ro"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cww.md/"/>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://cww.md/?lang=ru</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://cww.md/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://cww.md/?lang=ru"/>
-    <xhtml:link rel="alternate" hreflang="ro" href="https://cww.md/?lang=ro"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cww.md/"/>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://cww.md/?lang=ro</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://cww.md/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://cww.md/?lang=ru"/>
-    <xhtml:link rel="alternate" hreflang="ro" href="https://cww.md/?lang=ro"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cww.md/"/>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://cww.md/sermons</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://cww.md/sermons?lang=en"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://cww.md/sermons?lang=ru"/>
@@ -47,30 +20,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://cww.md/sermons?lang=en</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://cww.md/sermons?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://cww.md/sermons?lang=ru"/>
-    <xhtml:link rel="alternate" hreflang="ro" href="https://cww.md/sermons?lang=ro"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cww.md/sermons"/>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://cww.md/sermons?lang=ru</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://cww.md/sermons?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://cww.md/sermons?lang=ru"/>
-    <xhtml:link rel="alternate" hreflang="ro" href="https://cww.md/sermons?lang=ro"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cww.md/sermons"/>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://cww.md/sermons?lang=ro</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://cww.md/sermons?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://cww.md/sermons?lang=ru"/>
-    <xhtml:link rel="alternate" hreflang="ro" href="https://cww.md/sermons?lang=ro"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://cww.md/sermons"/>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <loc>https://cww.md/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://cww.md/contact?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://cww.md/contact?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://cww.md/contact?lang=ro"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cww.md/contact"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
