@@ -1,6 +1,7 @@
 import React from 'react';
 import { Play } from 'lucide-react';
 import { Sermon, Translation } from '../../types';
+import { trackEvent } from '../../utils/analytics';
 
 interface SermonCardProps {
   sermon: Sermon;
@@ -21,7 +22,10 @@ const SermonCard: React.FC<SermonCardProps> = ({ sermon, t, onPlay }) => {
     <article className="group">
       <button
         type="button"
-        onClick={() => (canPlay ? onPlay(sermon) : sermon.youtubeUrl && window.open(sermon.youtubeUrl, '_blank', 'noopener,noreferrer'))}
+        onClick={() => {
+          trackEvent('click_watch_online', { sermon_id: sermon.id });
+          canPlay ? onPlay(sermon) : sermon.youtubeUrl && window.open(sermon.youtubeUrl, '_blank', 'noopener,noreferrer');
+        }}
         className="w-full text-left"
         disabled={!canPlay && !sermon.youtubeUrl}
         aria-label={`${t.watchSermon}: ${sermon.title}`}

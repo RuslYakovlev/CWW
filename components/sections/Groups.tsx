@@ -23,7 +23,7 @@ const Groups: React.FC<GroupsProps> = ({ t }) => {
               <div className="absolute inset-0 bg-black/10 z-10" />
               <img
                 src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80&w=1000"
-                alt="Small group discussion"
+                alt="Christian community small group in Moldova"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />

@@ -6,6 +6,7 @@ import Card from '../ui/Card';
 import { Sermon, Translation } from '../../types';
 import VideoPlayerModal from '../sermons/VideoPlayerModal';
 import { isPublicSermon } from '../../utils/sermons';
+import { trackEvent } from '../../utils/analytics';
 
 interface LatestSermonsProps {
   t: Translation;
@@ -55,7 +56,10 @@ const LatestSermons: React.FC<LatestSermonsProps> = ({ t }) => {
             <button
               key={sermon.id || index}
               type="button"
-              onClick={() => sermon.youtubeId ? setActiveSermon(sermon) : sermon.youtubeUrl && window.open(sermon.youtubeUrl, '_blank', 'noopener,noreferrer')}
+              onClick={() => {
+                trackEvent('click_watch_online', { sermon_id: sermon.id });
+                sermon.youtubeId ? setActiveSermon(sermon) : sermon.youtubeUrl && window.open(sermon.youtubeUrl, '_blank', 'noopener,noreferrer');
+              }}
               className="text-left"
               aria-label={`${t.watchSermon}: ${sermon.title}`}
             >
@@ -76,6 +80,7 @@ const LatestSermons: React.FC<LatestSermonsProps> = ({ t }) => {
         <div className="text-center mt-16">
           <Link
             to="/sermons"
+            onClick={() => trackEvent('click_watch_online', { target: 'sermons_catalog' })}
             className="inline-flex px-10 py-4 rounded-full font-semibold text-sm uppercase tracking-widest transition-all duration-300 border border-text/20 text-text hover:bg-text hover:text-white focus:outline-none focus:ring-4 focus:ring-text/20"
           >
             {t.allSermons}

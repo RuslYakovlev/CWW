@@ -14,6 +14,8 @@ import Groups from './components/sections/Groups';
 import ChurchLife from './components/sections/ChurchLife';
 import BecomeFamily from './components/sections/BecomeFamily';
 import SermonsPage from './components/pages/SermonsPage';
+import LocalSeo from './components/sections/LocalSeo';
+import Seo from './components/seo/Seo';
 
 import AdminLogin from './components/admin/AdminLogin';
 import AdminDashboard from './components/admin/AdminDashboard';
@@ -26,6 +28,7 @@ const PublicApp: React.FC<{ lang: Language, setLang: (l: Language) => void, t: a
     <main className="flex-grow">
       <Hero t={t} />
       <AboutBrief t={t} />
+      <LocalSeo t={t} />
       <LatestSermons t={t} />
       <Groups t={t} />
       <ChurchLife t={t} />
@@ -36,8 +39,21 @@ const PublicApp: React.FC<{ lang: Language, setLang: (l: Language) => void, t: a
 );
 
 const App: React.FC = () => {
-  const [lang, setLang] = useState<Language>('ru');
+  const getInitialLanguage = (): Language => {
+    if (typeof window === 'undefined') return 'ru';
+    const urlLang = new URLSearchParams(window.location.search).get('lang');
+    return urlLang === 'en' || urlLang === 'ro' || urlLang === 'ru' ? urlLang : 'ru';
+  };
+
+  const [lang, setLangState] = useState<Language>(getInitialLanguage);
   const t = translations[lang];
+
+  const setLang = (nextLang: Language) => {
+    setLangState(nextLang);
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', nextLang);
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  };
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -45,6 +61,7 @@ const App: React.FC = () => {
 
   return (
     <BrowserRouter>
+      <Seo lang={lang} />
       <Routes>
         <Route path="/" element={<PublicApp lang={lang} setLang={setLang} t={t} />} />
         <Route path="/sermons" element={<SermonsPage lang={lang} setLang={setLang} t={t} />} />

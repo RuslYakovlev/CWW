@@ -10,11 +10,11 @@ interface ChurchLifeProps {
 
 const ChurchLife: React.FC<ChurchLifeProps> = ({ t }) => {
   const images = [
-    { src: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80&w=800', alt: 'Small group discussion', className: 'row-span-2' },
-    { src: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=800', alt: 'Community service event' },
-    { src: 'https://images.unsplash.com/photo-1519834785169-98be25ec3f84?auto=format&fit=crop&q=80&w=800', alt: 'Bible study group' },
-    { src: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&q=80&w=1600', alt: 'Worship moment', className: 'col-span-2' },
-    { src: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&q=80&w=800', alt: 'Serving food to the needy' },
+    { src: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80&w=800', alt: 'Church Without Walls small group in Chisinau', className: 'row-span-2' },
+    { src: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=800', alt: 'Christian community event in Moldova' },
+    { src: 'https://images.unsplash.com/photo-1519834785169-98be25ec3f84?auto=format&fit=crop&q=80&w=800', alt: 'Bible study group in Chisinau' },
+    { src: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&q=80&w=1600', alt: 'Church Without Walls worship service in Chisinau', className: 'col-span-2' },
+    { src: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&q=80&w=800', alt: 'Church Without Walls community outreach in Moldova' },
   ];
 
   return (

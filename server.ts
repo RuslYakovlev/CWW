@@ -20,6 +20,24 @@ const YOUTUBE_SYNC_INTERVAL_MS = 30 * 60 * 1000;
 app.use(cors());
 app.use(express.json());
 
+app.use((req, res, next) => {
+  const host = req.headers.host || '';
+  const forwardedProto = String(req.headers['x-forwarded-proto'] || '');
+  const isCwwDomain = /(^|\.)cww\.md(?::\d+)?$/i.test(host);
+
+  if (process.env.NODE_ENV === 'production' && isCwwDomain) {
+    const shouldUseNonWww = host.toLowerCase().startsWith('www.');
+    const shouldUseHttps = forwardedProto === 'http';
+
+    if (shouldUseNonWww || shouldUseHttps) {
+      res.redirect(301, `https://cww.md${req.originalUrl}`);
+      return;
+    }
+  }
+
+  next();
+});
+
 const authenticateToken = (req: any, res: any, next: any) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];

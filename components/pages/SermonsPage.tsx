@@ -7,6 +7,7 @@ import Container from '../layout/Container';
 import SermonCard from '../sermons/SermonCard';
 import VideoPlayerModal from '../sermons/VideoPlayerModal';
 import { isPublicSermon } from '../../utils/sermons';
+import { SITE_URL } from '../../utils/seo';
 
 type SortMode = 'newest' | 'popular' | 'oldest';
 
@@ -54,6 +55,44 @@ const SermonsPage: React.FC<SermonsPageProps> = ({ lang, setLang, t }) => {
       return right - left;
     });
   }, [query, sermons, sortMode]);
+
+  useEffect(() => {
+    if (visibleSermons.length === 0) return;
+
+    let element = document.getElementById('sermons-video-jsonld') as HTMLScriptElement | null;
+    if (!element) {
+      element = document.createElement('script');
+      element.id = 'sermons-video-jsonld';
+      element.type = 'application/ld+json';
+      document.head.appendChild(element);
+    }
+
+    element.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      itemListElement: visibleSermons.slice(0, 10).map((sermon, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'VideoObject',
+          name: sermon.title,
+          description: `${sermon.title} — ${sermon.speaker}. Church Without Walls sermon from Chisinau, Moldova.`,
+          thumbnailUrl: [sermon.imageUrl],
+          uploadDate: sermon.date,
+          embedUrl: sermon.youtubeId ? `https://www.youtube.com/embed/${sermon.youtubeId}` : undefined,
+          url: sermon.youtubeUrl || `${SITE_URL}/sermons`,
+          publisher: {
+            '@type': 'Organization',
+            name: 'Church Without Walls',
+            logo: {
+              '@type': 'ImageObject',
+              url: `${SITE_URL}/logo-ru-symbol.png`,
+            },
+          },
+        },
+      })),
+    });
+  }, [visibleSermons]);
 
   return (
     <div className="min-h-screen bg-bg flex flex-col">

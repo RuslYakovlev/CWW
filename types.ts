@@ -28,6 +28,7 @@ export interface Translation {
   // Hero
   heroTitle: string;
   heroSubtitle: string;
+  heroImageAlt: string;
   ctaJoin: string;
   ctaWatchOnline: string;
 
@@ -39,6 +40,8 @@ export interface Translation {
   whatWeBelieveText: string;
   ourMission: string;
   ourMissionText: string;
+  localSeoTitle: string;
+  localSeoText: string;
 
   // Upcoming Event
   upcomingEventTitle: string;
@@ -82,6 +85,7 @@ export interface Translation {
   address: string;
   phone: string;
   email: string;
+  directionsLabel: string;
 
   // Event Details
   sundayService: string;

@@ -16,7 +16,7 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
   const location = useLocation();
   const isHome = location.pathname === '/';
   const isSolid = isScrolled || !isHome;
-  const churchName = lang === 'ro' ? 'Biserica Fara Ziduri' : lang === 'en' ? 'Church Without Walls' : 'Церковь Без Стен';
+  const churchName = lang === 'ro' ? 'Biserica Fără Ziduri' : lang === 'en' ? 'Church Without Walls' : 'Церковь Без Стен';
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -44,14 +44,14 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
     >
       <Container>
         <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3" aria-label="Church Without Walls home">
             <Logo className="w-12 h-12" light={!isSolid} lang={lang} />
             <span className={`font-serif font-bold text-2xl tracking-wide transition-colors duration-500 ${isSolid ? 'text-text' : 'text-white'}`}>
               {churchName}
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
             {navLinks.map((link) => (
               link.href.startsWith('/') ? (
                 <Link key={link.name} to={link.href} className={linkClass}>
@@ -68,11 +68,11 @@ const Header: React.FC<HeaderProps> = ({ lang, setLang, t }) => {
           </nav>
 
           <div className={`flex items-center gap-2 text-xs tracking-widest uppercase font-medium transition-colors duration-500 ${isSolid ? 'text-text/60' : 'text-white/60'}`}>
-            <button onClick={() => setLang('ru')} className={`transition-colors ${lang === 'ru' ? (isSolid ? 'text-text' : 'text-white') : 'hover:text-accent'}`}>RU</button>
+            <button type="button" onClick={() => setLang('ru')} aria-label="Русская версия сайта" className={`transition-colors ${lang === 'ru' ? (isSolid ? 'text-text' : 'text-white') : 'hover:text-accent'}`}>RU</button>
             <span>|</span>
-            <button onClick={() => setLang('ro')} className={`transition-colors ${lang === 'ro' ? (isSolid ? 'text-text' : 'text-white') : 'hover:text-accent'}`}>RO</button>
+            <button type="button" onClick={() => setLang('ro')} aria-label="Versiunea română a site-ului" className={`transition-colors ${lang === 'ro' ? (isSolid ? 'text-text' : 'text-white') : 'hover:text-accent'}`}>RO</button>
             <span>|</span>
-            <button onClick={() => setLang('en')} className={`transition-colors ${lang === 'en' ? (isSolid ? 'text-text' : 'text-white') : 'hover:text-accent'}`}>EN</button>
+            <button type="button" onClick={() => setLang('en')} aria-label="English version of the site" className={`transition-colors ${lang === 'en' ? (isSolid ? 'text-text' : 'text-white') : 'hover:text-accent'}`}>EN</button>
           </div>
         </div>
       </Container>

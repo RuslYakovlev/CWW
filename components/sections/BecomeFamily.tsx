@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Container from '../layout/Container';
 import Button from '../ui/Button';
 import { Translation } from '../../types';
+import { trackEvent } from '../../utils/analytics';
 
 interface BecomeFamilyProps {
   t: Translation;
@@ -31,6 +32,10 @@ const BecomeFamily: React.FC<BecomeFamilyProps> = ({ t }) => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
+            onSubmit={(event) => {
+              event.preventDefault();
+              trackEvent('submit_contact_form');
+            }}
             className="w-full space-y-6"
           >
             <div>
