@@ -51,6 +51,27 @@ const sermonsSeo = {
   },
 } satisfies Record<Language, { title: string; description: string; ogTitle: string; ogDescription: string }>;
 
+const contactSeo = {
+  en: {
+    title: 'Contact Church Without Walls | Christian Church in Chisinau',
+    description: 'Contact Church Without Walls in Chisinau, Moldova. Find our address, phone, email, Sunday service schedule and map directions.',
+    ogTitle: 'Contact Church Without Walls Chisinau',
+    ogDescription: 'Address, phone, email, worship schedule and map directions for Church Without Walls in Chisinau, Moldova.',
+  },
+  ru: {
+    title: 'Контакты Church Without Walls | Христианская церковь в Кишинёве',
+    description: 'Контакты Church Without Walls в Кишинёве, Молдова: адрес, телефон, email, расписание воскресных богослужений и маршрут на карте.',
+    ogTitle: 'Контакты Church Without Walls в Кишинёве',
+    ogDescription: 'Адрес, телефон, email, расписание богослужений и маршрут к Church Without Walls в Кишинёве, Молдова.',
+  },
+  ro: {
+    title: 'Contact Church Without Walls | Biserică creștină în Chișinău',
+    description: 'Contactează Church Without Walls în Chișinău, Moldova. Găsește adresa, telefonul, emailul, programul serviciilor și traseul pe hartă.',
+    ogTitle: 'Contact Church Without Walls Chișinău',
+    ogDescription: 'Adresă, telefon, email, programul serviciilor și traseul către Church Without Walls în Chișinău, Moldova.',
+  },
+} satisfies Record<Language, { title: string; description: string; ogTitle: string; ogDescription: string }>;
+
 export const localeByLanguage: Record<Language, string> = {
   en: 'en_US',
   ru: 'ru_RU',
@@ -59,8 +80,9 @@ export const localeByLanguage: Record<Language, string> = {
 
 export const getPageSeo = (pathname: string, lang: Language) => {
   const isSermonsPage = pathname === '/sermons';
-  const seo = isSermonsPage ? sermonsSeo[lang] : homeSeo[lang];
-  const canonicalPath = isSermonsPage ? '/sermons' : '/';
+  const isContactPage = pathname === '/contact';
+  const seo = isContactPage ? contactSeo[lang] : isSermonsPage ? sermonsSeo[lang] : homeSeo[lang];
+  const canonicalPath = isContactPage ? '/contact' : isSermonsPage ? '/sermons' : '/';
 
   return {
     ...seo,
@@ -70,13 +92,13 @@ export const getPageSeo = (pathname: string, lang: Language) => {
 };
 
 export const getLocalizedUrl = (pathname: string, lang: Language) => {
-  const normalizedPath = pathname === '/sermons' ? '/sermons' : '/';
+  const normalizedPath = pathname === '/sermons' ? '/sermons' : pathname === '/contact' ? '/contact' : '/';
   const separator = normalizedPath === '/' ? '?' : '?';
   return `${SITE_URL}${normalizedPath}${separator}lang=${lang}`;
 };
 
 export const getCanonicalUrl = (pathname: string, lang: Language, hasExplicitLang: boolean) => {
-  const normalizedPath = pathname === '/sermons' ? '/sermons' : '/';
+  const normalizedPath = pathname === '/sermons' ? '/sermons' : pathname === '/contact' ? '/contact' : '/';
   if (!hasExplicitLang) return `${SITE_URL}${normalizedPath}`;
   return getLocalizedUrl(normalizedPath, lang);
 };
